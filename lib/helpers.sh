@@ -155,7 +155,7 @@ function check_dependencies() {
 
       # The alias can't be defined and used in the same parsing unit. But
       # since we know the correct package is installed, we can exit early.
-      exit
+      exit 0;
     fi;
 
     if ! grep --version 2>&1 | grep -q "GNU grep"; then
