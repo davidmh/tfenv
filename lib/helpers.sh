@@ -153,14 +153,14 @@ function check_dependencies() {
       shopt -s expand_aliases;
       alias grep=ggrep;
 
-      # The alias can't be defined and used in the same parsing unit. But
-      # since we know the correct package is installed, we can exit early.
-      exit 0;
+      # # The alias can't be defined and used in the same parsing unit. But
+      # # since we know the correct package is installed, we can exit early.
+      # exit 0;
     fi;
 
-    if ! grep --version 2>&1 | grep -q "GNU grep"; then
-      log 'error' 'GNU Grep is a requirement and your Mac does not have it. Consider installing it with `brew install grep` or `nix profile install nixpkgs#gnugrep`';
-    fi;
+    # if ! grep --version 2>&1 | grep -q "GNU grep"; then
+    #   log 'error' 'GNU Grep is a requirement and your Mac does not have it. Consider installing it with `brew install grep` or `nix profile install nixpkgs#gnugrep`';
+    # fi;
   fi;
 };
 export -f check_dependencies;
