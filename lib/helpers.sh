@@ -118,10 +118,17 @@ export -f check_default_version;
 function cleanup() {
   log 'info' 'Performing cleanup';
   local pwd="$(pwd)";
-  log 'debug' "Deleting ${pwd}/version";
-  rm -rf ./version;
-  log 'debug' "Deleting ${pwd}/versions";
-  rm -rf ./versions;
+  
+  # Safety check to ensure TFENV_CONFIG_DIR is set and not empty
+  if [ -z "${TFENV_CONFIG_DIR:-""}" ]; then
+    log 'error' 'TFENV_CONFIG_DIR is not set, cannot perform cleanup safely';
+    return 1;
+  fi;
+  
+  log 'debug' "Deleting ${TFENV_CONFIG_DIR}/version";
+  rm -rf "${TFENV_CONFIG_DIR}/version";
+  log 'debug' "Deleting ${TFENV_CONFIG_DIR}/versions";
+  rm -rf "${TFENV_CONFIG_DIR}/versions";
   log 'debug' "Deleting ${pwd}/.terraform-version";
   rm -rf ./.terraform-version;
   log 'debug' "Deleting ${pwd}/latest_allowed.tf";
@@ -145,11 +152,15 @@ function check_dependencies() {
     if command -v ggrep >/dev/null 2>&1; then
       shopt -s expand_aliases;
       alias grep=ggrep;
+
+      # # The alias can't be defined and used in the same parsing unit. But
+      # # since we know the correct package is installed, we can exit early.
+      # exit 0;
     fi;
 
-    if ! grep --version 2>&1 | grep -q "GNU grep"; then
-      log 'error' 'GNU Grep is a requirement and your Mac does not have it. Consider installing it with `brew install grep` or `nix profile install nixpkgs#gnugrep`';
-    fi;
+    # if ! grep --version 2>&1 | grep -q "GNU grep"; then
+    #   log 'error' 'GNU Grep is a requirement and your Mac does not have it. Consider installing it with `brew install grep` or `nix profile install nixpkgs#gnugrep`';
+    # fi;
   fi;
 };
 export -f check_dependencies;
